@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 字符串格式化工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-width: 0;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        textarea, pre {
+            width: 100%;
+            height: 500px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+        }
+
+        textarea {
+            background-color: #fff;
+            color: #333;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            overflow: auto;
+            white-space: pre;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        pre.error {
+            background-color: #fff;
+            color: #dc3545;
+            border: 2px solid #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 16px;
+            word-break: normal;
+        }
+
+        pre.empty {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON 字符串格式化工具</h1>
+
+    <div class="container">
+        <!-- 左侧：原始字符串 -->
+        <div class="panel">
+            <div class="panel-title">原始 JSON 字符串</div>
+            <textarea id="rawJson" placeholder='请输入 JSON 字符串，例如：{"name":"张三","age":25}'></textarea>
+        </div>
+
+        <!-- 右侧：格式化后的字符串 -->
+        <div class="panel">
+            <div class="panel-title">格式化后的 JSON</div>
+            <pre id="formattedJson" class="empty">等待格式化...</pre>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button onclick="formatJson()">格式化 JSON</button>
+    </div>
+
+    <script>
+        function formatJson() {
+            const rawInput = document.getElementById('rawJson').value.trim();
+            const output = document.getElementById('formattedJson');
+
+            // 输入为空时
+            if (!rawInput) {
+                output.textContent = '请输入 JSON 字符串';
+                output.className = 'empty';
+                return;
+            }
+
+            try {
+                // 去除外层多余引号的辅助函数
+                function stripOuterQuotes(str) {
+                    if (str.length >= 2 && str.startsWith('"') && str.endsWith('"')) {
+                        return JSON.parse(str);
+                    }
+                    return str;
+                }
+
+                // 先去掉可能存在的外层引号
+                let processed = stripOuterQuotes(rawInput);
+
+                // 递归解析：如果解析结果仍是字符串，继续尝试解析
+                let jsonObj = JSON.parse(processed);
+                while (typeof jsonObj === 'string') {
+                    try {
+                        jsonObj = JSON.parse(jsonObj);
+                    } catch (e) {
+                        // 内层无法再解析时，停止循环
+                        break;
+                    }
+                }
+
+                // 格式化输出，缩进 2 个空格
+                const formatted = JSON.stringify(jsonObj, null, 4);
+                output.textContent = formatted;
+                output.className = '';
+            } catch (error) {
+                // JSON 格式错误时，右侧显示错误提示信息
+                output.textContent = '❌ JSON 格式错误\n\n' + error.message;
+                output.className = 'error';
+            }
+        }
+
+        // 支持 Ctrl+Enter 快捷键格式化
+        document.getElementById('rawJson').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                formatJson();
+            }
+        });
+    </script>
+</body>
+</html>
