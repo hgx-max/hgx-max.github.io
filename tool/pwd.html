@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>密码生成器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090c;
+    --surface: #111318;
+    --surface-hover: #181b24;
+    --border: #1e2130;
+    --accent: #00e5a0;
+    --accent-dim: rgba(0,229,160,0.15);
+    --accent-glow: rgba(0,229,160,0.06);
+    --text-primary: #e8e6e1;
+    --text-muted: #6b6e7b;
+    --text-dim: #3d3f4a;
+    --blue: #60a5fa;
+    --yellow: #fbbf24;
+    --pink: #f472b6;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 32px 16px 60px;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 90%, rgba(0,229,160,0.04) 0%, transparent 100%),
+      radial-gradient(ellipse 40% 50% at 90% 10%, rgba(0,102,255,0.03) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .header-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .header-icon::after {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: 12.5px;
+    border: 1px solid var(--accent);
+    opacity: 0.12;
+  }
+
+  .header-icon svg {
+    width: 20px; height: 20px;
+    stroke: var(--accent); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text-primary) 40%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.3px;
+    padding-left: 56px;
+  }
+
+  /* Settings */
+  .settings {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 22px 20px;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    animation-delay: 0.08s;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Two-column top row */
+  .top-config {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .config-block label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* Length slider */
+  .length-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 12px var(--accent-dim);
+    transition: box-shadow 0.2s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 20px var(--accent-dim), 0 0 40px var(--accent-glow);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 12px var(--accent-dim);
+  }
+
+  .range-marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+
+  .range-marks span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* Count input */
+  .count-input-wrap {
+    position: relative;
+  }
+
+  .count-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .count-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .count-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* Checkboxes */
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .chk {
+    display: flex; align-items: center;
+    gap: 10px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .chk:hover {
+    border-color: var(--text-dim);
+    background: var(--surface-hover);
+  }
+
+  .chk.on {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .chk input { display: none; }
+
+  .chk-box {
+    width: 17px; height: 17px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .chk.on .chk-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .chk-box svg {
+    width: 10px; height: 10px;
+    stroke: var(--bg); fill: none;
+    stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0; transform: scale(0.4);
+    transition: all 0.15s;
+  }
+
+  .chk.on .chk-box svg { opacity: 1; transform: scale(1); }
+
+  .chk-info { display: flex; flex-direction: column; gap: 1px; }
+
+  .chk-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+
+  .chk-sample {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  /* Custom */
+  .custom-section {
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px 13px;
+    transition: all 0.2s;
+  }
+
+  .custom-section.on {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .custom-toggle {
+    display: flex; align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0;
+    transition: margin-bottom 0.25s;
+  }
+
+  .custom-section.on .custom-toggle { margin-bottom: 10px; }
+
+  .custom-input-row {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .custom-section.on .custom-input-row { grid-template-rows: 1fr; }
+
+  .custom-input-inner { overflow: hidden; }
+
+  .custom-input {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+    opacity: 0.35;
+  }
+
+  .custom-section.on .custom-input { opacity: 1; }
+
+  .custom-section.on .custom-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .custom-input::placeholder {
+    color: var(--text-dim);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+  }
+
+  /* Generate Button */
+  .gen-row {
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    animation-delay: 0.16s;
+  }
+
+  .btn-gen {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.25s;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-gen:hover {
+    background: #00ffba;
+    box-shadow: 0 4px 30px var(--accent-dim);
+    letter-spacing: 1.2px;
+  }
+
+  .btn-gen:active { transform: scale(0.985); }
+
+  .btn-gen svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Results */
+  .results {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    animation-delay: 0.24s;
+  }
+
+  .results-head {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .results-left {
+    display: flex; align-items: center;
+    gap: 10px;
+  }
+
+  .results-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .count-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .strength-inline {
+    display: flex; align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .strength-inline .s-label {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .strength-bar-mini {
+    width: 52px; height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .strength-bar-mini-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease, background 0.4s ease;
+    width: 0;
+  }
+
+  .strength-inline .s-text {
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .btn-copy-all {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center;
+    gap: 5px;
+  }
+
+  .btn-copy-all:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
+
+  .btn-copy-all.copied {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .btn-copy-all svg {
+    width: 13px; height: 13px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .result-list { padding: 4px 0; }
+
+  .result-item {
+    display: flex;
+    align-items: center;
+    padding: 11px 20px;
+    gap: 14px;
+    transition: background 0.15s;
+    opacity: 0;
+    animation: slideIn 0.35s ease forwards;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px; right: 20px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .result-item:last-child::after { display: none; }
+
+  .result-item:hover { background: var(--surface-hover); }
+
+  .result-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 24px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .result-pwd-wrap {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .result-pwd {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.6px;
+    line-height: 1.5;
+    cursor: text;
+    user-select: all;
+    white-space: nowrap;
+    transform-origin: left center;
+    transition: font-size 0.15s ease;
+  }
+
+  .result-pwd .c-num { color: var(--blue); }
+  .result-pwd .c-low { color: var(--text-primary); }
+  .result-pwd .c-up  { color: var(--yellow); }
+  .result-pwd .c-sym { color: var(--accent); }
+  .result-pwd .c-cus { color: var(--pink); }
+
+  .btn-copy-one {
+    width: 32px; height: 32px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    color: var(--text-dim);
+  }
+
+  .btn-copy-one:hover {
+    color: var(--text-primary);
+    border-color: var(--text-dim);
+    background: var(--bg);
+  }
+
+  .btn-copy-one.done {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .btn-copy-one svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .empty-hint {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (max-width: 540px) {
+    .check-grid { grid-template-columns: 1fr; }
+    .header p { padding-left: 0; margin-top: 4px; }
+    .header h1 { font-size: 22px; }
+    .results-head { padding: 12px 14px; }
+    .result-item { padding: 10px 14px; gap: 10px; }
+    .result-item::after { left: 14px; right: 14px; }
+    .top-config { grid-template-columns: 1fr; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-row">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h1>密码生成器</h1>
+    </div>
+    <p>// 安全随机，批量生成</p>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings">
+    <div class="section-label">配置</div>
+
+    <!-- Length + Count -->
+    <div class="top-config">
+      <div class="config-block">
+        <label>密码长度</label>
+        <div class="length-val" id="lengthVal">12</div>
+        <input type="range" id="lengthSlider" min="4" max="64" value="12" oninput="onLengthChange(this.value)">
+        <div class="range-marks">
+          <span>4</span><span>16</span><span>32</span><span>48</span><span>64</span>
+        </div>
+      </div>
+      <div class="config-block">
+        <label>生成数量</label>
+        <div class="count-input-wrap">
+          <input type="number" class="count-input" id="countInput" value="10" min="1" max="200" oninput="onCountInput()">
+        </div>
+        <div class="count-hint">范围 1 ~ 200</div>
+      </div>
+    </div>
+
+    <!-- Standard charsets -->
+    <div class="check-grid">
+      <label class="chk on" onclick="toggleStd(this, event)">
+        <input type="checkbox" checked data-charset="upper">
+        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-info">
+          <span class="chk-label">大写字母</span>
+          <span class="chk-sample">A B C D E F</span>
+        </div>
+      </label>
+      <label class="chk on" onclick="toggleStd(this, event)">
+        <input type="checkbox" checked data-charset="lower">
+        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-info">
+          <span class="chk-label">小写字母</span>
+          <span class="chk-sample">a b c d e f</span>
+        </div>
+      </label>
+      <label class="chk on" onclick="toggleStd(this, event)">
+        <input type="checkbox" checked data-charset="number">
+        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-info">
+          <span class="chk-label">数字</span>
+          <span class="chk-sample">0 1 2 3 4 5</span>
+        </div>
+      </label>
+      <label class="chk on" onclick="toggleStd(this, event)">
+        <input type="checkbox" checked data-charset="special">
+        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-info">
+          <span class="chk-label">特殊字符</span>
+          <span class="chk-sample">! @ # $ % ^</span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Custom -->
+    <div class="custom-section" id="customSection">
+      <div class="custom-toggle" onclick="toggleCustom()">
+        <div class="chk-box" id="customBox"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-info">
+          <span class="chk-label">自定义字符</span>
+          <span class="chk-sample">自行输入任意字符</span>
+        </div>
+      </div>
+      <div class="custom-input-row">
+        <div class="custom-input-inner">
+          <input type="text" class="custom-input" id="customInput" placeholder="输入自定义字符，如 ~`|&quot;'" disabled>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="gen-row">
+    <button class="btn-gen" onclick="generate()">
+      <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span id="genBtnText">生成 10 个密码</span>
+    </button>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="resultsPanel">
+    <div class="results-head">
+      <div class="results-left">
+        <span class="results-title">生成结果</span>
+        <span class="count-badge" id="countBadge">×10</span>
+        <div class="strength-inline">
+          <span class="s-label">强度</span>
+          <div class="strength-bar-mini"><div class="strength-bar-mini-fill" id="sFill"></div></div>
+          <span class="s-text" id="sText">—</span>
+        </div>
+      </div>
+      <button class="btn-copy-all" id="btnCopyAll" onclick="copyAll()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        复制全部
+      </button>
+    </div>
+    <div class="result-list" id="resultList">
+      <div class="empty-hint">点击上方按钮生成密码</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CHARSETS = {
+  upper:   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  lower:   'abcdefghijklmnopqrstuvwxyz',
+  number:  '0123456789',
+  special: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+};
+
+const STRENGTH = [
+  { min: 0,  text: '弱',   color: '#ff4d6a', w: '25%' },
+  { min: 14, text: '中等', color: '#fbbf24', w: '50%' },
+  { min: 22, text: '强',   color: '#60a5fa', w: '75%' },
+  { min: 30, text: '极强', color: '#00e5a0', w: '100%' }
+];
+
+let passwords = [];
+let customOn = false;
+
+function secRand(n) {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return a[0] % n;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function getCount() {
+  let v = parseInt(document.getElementById('countInput').value);
+  if (isNaN(v) || v < 1) v = 1;
+  if (v > 200) v = 200;
+  return v;
+}
+
+function onCountInput() {
+  const v = getCount();
+  document.getElementById('genBtnText').textContent = '生成 ' + v + ' 个密码';
+  document.getElementById('countBadge').textContent = '×' + v;
+}
+
+function toggleStd(label, ev) {
+  ev.preventDefault();
+  const cb = label.querySelector('input[type="checkbox"]');
+  const total = document.querySelectorAll('.check-grid .chk.on').length + (customOn ? 1 : 0);
+  if (label.classList.contains('on') && total <= 1) {
+    toast('至少需要选择一种字符类型');
+    return;
+  }
+  cb.checked = !cb.checked;
+  label.classList.toggle('on', cb.checked);
+  refreshStrength();
+}
+
+function toggleCustom() {
+  const section = document.getElementById('customSection');
+  const input = document.getElementById('customInput');
+  if (customOn) {
+    const total = document.querySelectorAll('.check-grid .chk.on').length;
+    if (total <= 0) { toast('至少需要选择一种字符类型'); return; }
+  }
+  customOn = !customOn;
+  section.classList.toggle('on', customOn);
+  input.disabled = !customOn;
+  if (customOn) setTimeout(() => input.focus(), 200);
+  refreshStrength();
+}
+
+function onLengthChange(v) {
+  document.getElementById('lengthVal').textContent = v;
+  refreshStrength();
+}
+
+function getCharsets() {
+  const list = [];
+  document.querySelectorAll('.check-grid .chk.on').forEach(el => {
+    const cb = el.querySelector('input[data-charset]');
+    if (cb && cb.checked) list.push({ key: cb.dataset.charset, pool: CHARSETS[cb.dataset.charset] });
+  });
+  if (customOn) {
+    const raw = document.getElementById('customInput').value.trim();
+    if (raw) {
+      const unique = [...new Set(raw)].join('');
+      list.push({ key: 'custom', pool: unique });
+    }
+  }
+  return list;
+}
+
+function refreshStrength() {
+  const len = parseInt(document.getElementById('lengthSlider').value);
+  const cs = getCharsets();
+  const score = len + cs.length * 3;
+  let level = STRENGTH[0];
+  for (let i = STRENGTH.length - 1; i >= 0; i--) {
+    if (score >= STRENGTH[i].min) { level = STRENGTH[i]; break; }
+  }
+  document.getElementById('sFill').style.width = level.w;
+  document.getElementById('sFill').style.background = level.color;
+  const sText = document.getElementById('sText');
+  sText.textContent = cs.length > 0 ? level.text : '—';
+  sText.style.color = cs.length > 0 ? level.color : 'var(--text-dim)';
+}
+
+function generate() {
+  const len = parseInt(document.getElementById('lengthSlider').value);
+  const count = getCount();
+  const charsets = getCharsets();
+
+  if (charsets.length === 0) { toast('请至少选择一种字符类型'); return; }
+  if (len < charsets.length) {
+    toast('密码长度不能少于已选类型数 (' + charsets.length + ')');
+    return;
+  }
+
+  const allPool = charsets.map(c => c.pool).join('');
+  passwords = [];
+
+  for (let n = 0; n < count; n++) {
+    const chars = [];
+    charsets.forEach(cs => chars.push(cs.pool[secRand(cs.pool.length)]));
+    while (chars.length < len) chars.push(allPool[secRand(allPool.length)]);
+    for (let i = chars.length - 1; i > 0; i--) {
+      const j = secRand(i + 1);
+      [chars[i], chars[j]] = [chars[j], chars[i]];
+    }
+    passwords.push(chars.join(''));
+  }
+
+  renderResults();
+  refreshStrength();
+}
+
+function charClass(ch) {
+  if (/[A-Z]/.test(ch)) return 'c-up';
+  if (/[a-z]/.test(ch)) return 'c-low';
+  if (/[0-9]/.test(ch)) return 'c-num';
+  if (customOn) {
+    const raw = document.getElementById('customInput').value.trim();
+    if ([...new Set(raw)].includes(ch)) return 'c-cus';
+  }
+  return 'c-sym';
+}
+
+function fitPasswordText(pwdEl) {
+  requestAnimationFrame(() => {
+    const wrap = pwdEl.parentElement;
+    const wrapW = wrap.clientWidth;
+    const textW = pwdEl.scrollWidth;
+    if (textW > wrapW) {
+      const ratio = wrapW / textW;
+      const baseSize = 14;
+      const newSize = Math.max(baseSize * ratio, 7);
+      pwdEl.style.fontSize = newSize + 'px';
+      pwdEl.style.letterSpacing = (0.6 * ratio) + 'px';
+    } else {
+      pwdEl.style.fontSize = '';
+      pwdEl.style.letterSpacing = '';
+    }
+  });
+}
+
+function renderResults() {
+  const list = document.getElementById('resultList');
+  list.innerHTML = '';
+
+  passwords.forEach((pwd, i) => {
+    const row = document.createElement('div');
+    row.className = 'result-item';
+    row.style.animationDelay = `${Math.min(i, 30) * 0.03}s`;
+
+    const num = document.createElement('span');
+    num.className = 'result-num';
+    const padLen = String(passwords.length).length;
+    num.textContent = String(i + 1).padStart(padLen, '0');
+
+    const wrap = document.createElement('div');
+    wrap.className = 'result-pwd-wrap';
+
+    const pwdEl = document.createElement('span');
+    pwdEl.className = 'result-pwd';
+    for (const ch of pwd) {
+      const s = document.createElement('span');
+      s.className = charClass(ch);
+      s.textContent = ch;
+      pwdEl.appendChild(s);
+    }
+    wrap.appendChild(pwdEl);
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-copy-one';
+    btn.title = '复制';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    btn.onclick = () => copySingle(i, btn);
+
+    row.appendChild(num);
+    row.appendChild(wrap);
+    row.appendChild(btn);
+    list.appendChild(row);
+
+    fitPasswordText(pwdEl);
+  });
+}
+
+function copySingle(idx, btn) {
+  if (!passwords[idx]) return;
+  navigator.clipboard.writeText(passwords[idx]).then(() => {
+    btn.classList.add('done');
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    toast('第 ' + (idx + 1) + ' 条已复制');
+    setTimeout(() => {
+      btn.classList.remove('done');
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    }, 1800);
+  });
+}
+
+function copyAll() {
+  if (passwords.length === 0) { toast('暂无可复制的密码'); return; }
+  const padLen = String(passwords.length).length;
+  const text = passwords.map((p, i) => String(i + 1).padStart(padLen, '0') + '. ' + p).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btnCopyAll');
+    btn.classList.add('copied');
+    const old = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    toast('全部 ' + passwords.length + ' 条已复制');
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = old; }, 1800);
+  });
+}
+
+// Resize listener to re-fit passwords
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.result-pwd').forEach(fitPasswordText);
+});
+
+document.getElementById('customInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') generate();
+});
+
+onCountInput();
+generate();
+</script>
+
+</body>
+</html>
