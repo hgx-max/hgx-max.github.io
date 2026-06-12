@@ -401,7 +401,7 @@
   .btn-gen svg {
     width: 18px; height: 18px;
     stroke: currentColor; fill: none;
-    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
   /* Results */
@@ -659,7 +659,8 @@
   <div class="header">
     <div class="header-row">
       <div class="header-icon">
-        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <!-- 锁图标 - 原创绘制 -->
+        <svg viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 0 1 12 0v3"/><rect x="4" y="10" width="16" height="12" rx="2"/><circle cx="12" cy="16" r="2"/></svg>
       </div>
       <h1>密码生成器</h1>
     </div>
@@ -693,7 +694,7 @@
     <div class="check-grid">
       <label class="chk on" onclick="toggleStd(this, event)">
         <input type="checkbox" checked data-charset="upper">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="chk-info">
           <span class="chk-label">大写字母</span>
           <span class="chk-sample">A B C D E F</span>
@@ -701,7 +702,7 @@
       </label>
       <label class="chk on" onclick="toggleStd(this, event)">
         <input type="checkbox" checked data-charset="lower">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="chk-info">
           <span class="chk-label">小写字母</span>
           <span class="chk-sample">a b c d e f</span>
@@ -709,7 +710,7 @@
       </label>
       <label class="chk on" onclick="toggleStd(this, event)">
         <input type="checkbox" checked data-charset="number">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="chk-info">
           <span class="chk-label">数字</span>
           <span class="chk-sample">0 1 2 3 4 5</span>
@@ -717,7 +718,7 @@
       </label>
       <label class="chk on" onclick="toggleStd(this, event)">
         <input type="checkbox" checked data-charset="special">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="chk-info">
           <span class="chk-label">特殊字符</span>
           <span class="chk-sample">! @ # $ % ^</span>
@@ -728,7 +729,7 @@
     <!-- Custom -->
     <div class="custom-section" id="customSection">
       <div class="custom-toggle" onclick="toggleCustom()">
-        <div class="chk-box" id="customBox"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="chk-box" id="customBox"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="chk-info">
           <span class="chk-label">自定义字符</span>
           <span class="chk-sample">自行输入任意字符</span>
@@ -745,7 +746,8 @@
   <!-- Generate -->
   <div class="gen-row">
     <button class="btn-gen" onclick="generate()">
-      <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <!-- 刷新/循环箭头图标 - 原创绘制 -->
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/><path d="M12 21a9 9 0 0 1-7.2-3.6"/><path d="M3 21v-5h5"/><circle cx="12" cy="12" r="1.5"/></svg>
       <span id="genBtnText">生成 10 个密码</span>
     </button>
   </div>
@@ -763,7 +765,8 @@
         </div>
       </div>
       <button class="btn-copy-all" id="btnCopyAll" onclick="copyAll()">
-        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <!-- 剪贴板图标 - 原创绘制 -->
+        <svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M5 6h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
         复制全部
       </button>
     </div>
@@ -793,6 +796,12 @@ const STRENGTH = [
 
 let passwords = [];
 let customOn = false;
+
+/* 原创 SVG 图标路径 - 用于动态创建的按钮 */
+const ICONS = {
+  copy:     '<rect x="8" y="5" width="12" height="14" rx="1.5"/><path d="M5 8h1.5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>',
+  copied:   '<path d="M5 12l5 5L20 7"/>'
+};
 
 function secRand(n) {
   const a = new Uint32Array(1);
@@ -969,7 +978,7 @@ function renderResults() {
     const btn = document.createElement('button');
     btn.className = 'btn-copy-one';
     btn.title = '复制';
-    btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    btn.innerHTML = '<svg viewBox="0 0 24 24">' + ICONS.copy + '</svg>';
     btn.onclick = () => copySingle(i, btn);
 
     row.appendChild(num);
@@ -985,11 +994,11 @@ function copySingle(idx, btn) {
   if (!passwords[idx]) return;
   navigator.clipboard.writeText(passwords[idx]).then(() => {
     btn.classList.add('done');
-    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.innerHTML = '<svg viewBox="0 0 24 24">' + ICONS.copied + '</svg>';
     toast('第 ' + (idx + 1) + ' 条已复制');
     setTimeout(() => {
       btn.classList.remove('done');
-      btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      btn.innerHTML = '<svg viewBox="0 0 24 24">' + ICONS.copy + '</svg>';
     }, 1800);
   });
 }
@@ -1002,7 +1011,7 @@ function copyAll() {
     const btn = document.getElementById('btnCopyAll');
     btn.classList.add('copied');
     const old = btn.innerHTML;
-    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    btn.innerHTML = '<svg viewBox="0 0 24 24">' + ICONS.copied + '</svg> 已复制';
     toast('全部 ' + passwords.length + ' 条已复制');
     setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = old; }, 1800);
   });
