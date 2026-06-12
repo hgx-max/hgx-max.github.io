@@ -51,7 +51,7 @@
 
         ::selection { background: var(--accent); color: var(--bg); }
 
-        /* Header */
+        /* Top Bar */
         .top-bar {
             padding: 1rem 2rem;
             border-bottom: 1px solid var(--border);
@@ -94,6 +94,7 @@
             color: var(--text-muted);
             letter-spacing: 0.1em;
             text-transform: uppercase;
+            text-decoration: none;
             transition: color 0.2s;
         }
 
@@ -110,39 +111,32 @@
             flex-shrink: 0;
         }
 
+        /* 统一按钮样式 */
         .btn {
             padding: 8px 18px;
             font-family: inherit;
             font-size: 12px;
             font-weight: 600;
-            letter-spacing: 0.06em;
-            border: 1px solid var(--border);
+            letter-spacing: 0.08em;
+            border: 1px solid var(--accent);
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--surface);
-            color: var(--text-secondary);
+            background: var(--accent-dim);
+            color: var(--accent);
         }
 
         .btn:hover {
-            border-color: var(--text-muted);
-            color: var(--text-primary);
-            background: var(--surface-hover, #1a1d26);
-        }
-
-        .btn-primary {
             background: var(--accent);
             color: var(--bg);
-            border-color: var(--accent);
+            box-shadow: 0 2px 12px rgba(232,168,56,0.2);
         }
 
-        .btn-primary:hover {
-            background: #f0b848;
-            border-color: #f0b848;
-            color: var(--bg);
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .btn svg {
@@ -223,7 +217,7 @@
             font-size: 10px;
         }
 
-        /* Editor textarea */
+        /* Editor */
         .editor-wrap {
             flex: 1;
             position: relative;
@@ -247,7 +241,6 @@
             overflow: auto;
         }
 
-        /* Line numbers gutter */
         .line-gutter {
             position: absolute;
             top: 0;
@@ -267,12 +260,7 @@
             user-select: none;
         }
 
-        .line-gutter.error-line {
-            color: var(--hl-error);
-            font-weight: 700;
-        }
-
-        /* Syntax highlighted preview */
+        /* Preview */
         .preview-content {
             flex: 1;
             overflow: auto;
@@ -322,7 +310,6 @@
         .tk-colon { color: var(--hl-colon); }
         .tk-comma { color: var(--hl-comma); }
 
-        /* Error line highlight */
         .error-line-highlight {
             background: var(--hl-error-line);
             border-left: 3px solid var(--hl-error-marker);
@@ -331,7 +318,7 @@
             width: calc(100% + 3px);
         }
 
-        /* Error overlay */
+        /* Error box */
         .error-box {
             position: absolute;
             bottom: 16px;
@@ -353,9 +340,6 @@
         .error-box .err-title {
             font-weight: 700;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .error-box .err-msg {
@@ -394,7 +378,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Responsive */
         @media (max-width: 860px) {
             .main { flex-direction: column; }
             .editor-panel { border-right: none; border-bottom: 1px solid var(--border); }
@@ -417,7 +400,7 @@
 
     <!-- Toolbar -->
     <div class="toolbar">
-        <button class="btn btn-primary" onclick="doFormat()" title="格式化 (Ctrl+Enter)">
+        <button class="btn" onclick="doFormat()" title="格式化 (Ctrl+Enter)">
             <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h14"/></svg>
             格式化
         </button>
@@ -444,9 +427,8 @@
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <div class="main">
-        <!-- Editor -->
         <div class="editor-panel">
             <div class="panel-head">
                 <span>输入</span>
@@ -463,7 +445,6 @@
             </div>
         </div>
 
-        <!-- Preview -->
         <div class="preview-panel">
             <div class="panel-head">
                 <span>预览</span>
@@ -473,7 +454,7 @@
                 <div class="code-block">
                     <div class="code-gutter" id="codeGutter"></div>
                     <div class="code-content" id="codeContent">
-                        <span style="color:var(--text-dim);">等待格式化...</span>
+                        <span style="color:var(--text-dim)">等待格式化...</span>
                     </div>
                 </div>
             </div>
@@ -483,7 +464,6 @@
     <div class="toast" id="toast"></div>
 
     <script>
-    /* ========== Elements ========== */
     const rawJson     = document.getElementById('rawJson');
     const lineGutter  = document.getElementById('lineGutter');
     const codeContent = document.getElementById('codeContent');
@@ -496,10 +476,8 @@
     const inputMeta   = document.getElementById('inputMeta');
     const outputMeta  = document.getElementById('outputMeta');
 
-    let lastMode = '';
     let lastResult = '';
 
-    /* ========== Toast ========== */
     function toast(msg) {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -508,13 +486,11 @@
         t._tid = setTimeout(() => t.classList.remove('show'), 2200);
     }
 
-    /* ========== Status ========== */
     function setStatus(ok, text) {
         statusDot.className = 'status-dot ' + (ok ? 'ok' : 'err');
         statusText.textContent = text;
     }
 
-    /* ========== Line Numbers ========== */
     function updateLineGutter() {
         const lines = rawJson.value.split('\n').length;
         lineGutter.innerHTML = Array.from({length: lines}, (_, i) => i + 1).join('<br>');
@@ -538,14 +514,12 @@
     rawJson.addEventListener('keydown', syncGutterScroll);
     updateLineGutter();
 
-    /* ========== Parse with error location ========== */
     function parseJsonWithLocation(str) {
         try {
             return { ok: true, value: JSON.parse(str) };
         } catch (e) {
             const msg = e.message;
             let line = 1, col = 1;
-
             const posMatch = msg.match(/position\s+(\d+)/i);
             if (posMatch) {
                 const pos = parseInt(posMatch[1]);
@@ -553,60 +527,26 @@
                 line = (before.match(/\n/g) || []).length + 1;
                 col = pos - before.lastIndexOf('\n');
             }
-
             const lnMatch = msg.match(/line\s+(\d+)/i);
             const colMatch = msg.match(/column\s+(\d+)/i);
             if (lnMatch) line = parseInt(lnMatch[1]);
             if (colMatch) col = parseInt(colMatch[1]);
-
             return { ok: false, message: msg, line, col };
         }
     }
 
-    /* ========== Syntax Highlighting ========== */
     function escapeHtml(str) {
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function highlightJson(obj, indent) {
-        indent = indent || 4;
-        const json = JSON.stringify(obj, null, indent);
-        return highlightRaw(json);
-    }
-
     function highlightRaw(json) {
-        // Tokenize and highlight
         let result = '';
-        let i = 0;
-        const len = json.length;
-        let inString = false;
-        let stringStart = 0;
-        let isKey = false;
-
-        // Determine if a string is a key by looking what comes after it
-        function lookAheadForColon(start) {
-            let j = start;
-            // find end of string
-            while (j < len) {
-                if (json[j] === '\\') { j += 2; continue; }
-                if (json[j] === '"') { j++; break; }
-                j++;
-            }
-            // skip whitespace
-            while (j < len && (json[j] === ' ' || json[j] === '\t' || json[j] === '\n' || json[j] === '\r')) j++;
-            return json[j] === ':';
-        }
-
-        // Simple regex-based approach
         let pos = 0;
-        const tokens = [];
+        const len = json.length;
 
-        // Tokenize
         while (pos < len) {
             const ch = json[pos];
-
             if (ch === '"') {
-                // Find string end
                 let end = pos + 1;
                 while (end < len) {
                     if (json[end] === '\\') { end += 2; continue; }
@@ -619,78 +559,58 @@
                     while (j < len && (json[j] === ' ' || json[j] === '\t' || json[j] === '\n' || json[j] === '\r')) j++;
                     return json[j] === ':';
                 })();
-                tokens.push({ type: isKey ? 'key' : 'string', value: raw });
+                const v = escapeHtml(raw);
+                result += isKey
+                    ? '<span class="tk-key">' + v + '</span>'
+                    : '<span class="tk-str">' + v + '</span>';
                 pos = end;
             } else if (ch === '-' || (ch >= '0' && ch <= '9')) {
                 let end = pos + 1;
                 while (end < len && /[\d.eE\-+]/.test(json[end])) end++;
-                tokens.push({ type: 'number', value: json.substring(pos, end) });
+                result += '<span class="tk-num">' + escapeHtml(json.substring(pos, end)) + '</span>';
                 pos = end;
             } else if (json.substring(pos, pos + 4) === 'true') {
-                tokens.push({ type: 'bool', value: 'true' });
+                result += '<span class="tk-bool">true</span>';
                 pos += 4;
             } else if (json.substring(pos, pos + 5) === 'false') {
-                tokens.push({ type: 'bool', value: 'false' });
+                result += '<span class="tk-bool">false</span>';
                 pos += 5;
             } else if (json.substring(pos, pos + 4) === 'null') {
-                tokens.push({ type: 'null', value: 'null' });
+                result += '<span class="tk-null">null</span>';
                 pos += 4;
             } else if (ch === '{' || ch === '}') {
-                tokens.push({ type: 'brace', value: ch });
+                result += '<span class="tk-brace">' + ch + '</span>';
                 pos++;
             } else if (ch === '[' || ch === ']') {
-                tokens.push({ type: 'bracket', value: ch });
+                result += '<span class="tk-bracket">' + ch + '</span>';
                 pos++;
             } else if (ch === ':') {
-                tokens.push({ type: 'colon', value: ':' });
+                result += '<span class="tk-colon">:</span>';
                 pos++;
             } else if (ch === ',') {
-                tokens.push({ type: 'comma', value: ',' });
+                result += '<span class="tk-comma">,</span>';
                 pos++;
             } else {
-                // whitespace or other
-                tokens.push({ type: 'ws', value: ch });
+                result += escapeHtml(ch);
                 pos++;
             }
         }
-
-        // Render
-        for (const t of tokens) {
-            const v = escapeHtml(t.value);
-            switch (t.type) {
-                case 'key':    result += '<span class="tk-key">' + v + '</span>'; break;
-                case 'string': result += '<span class="tk-str">' + v + '</span>'; break;
-                case 'number': result += '<span class="tk-num">' + v + '</span>'; break;
-                case 'bool':   result += '<span class="tk-bool">' + v + '</span>'; break;
-                case 'null':   result += '<span class="tk-null">' + v + '</span>'; break;
-                case 'brace':  result += '<span class="tk-brace">' + v + '</span>'; break;
-                case 'bracket':result += '<span class="tk-bracket">' + v + '</span>'; break;
-                case 'colon':  result += '<span class="tk-colon">' + v + '</span>'; break;
-                case 'comma':  result += '<span class="tk-comma">' + v + '</span>'; break;
-                default:       result += v;
-            }
-        }
-
         return result;
     }
 
-    /* ========== Show Error ========== */
     function showError(msg, line, col) {
         const raw = rawJson.value;
         const lines = raw.split('\n');
 
-        // Highlight error line in gutter
         lineGutter.innerHTML = lines.map((_, i) => {
             const num = i + 1;
             return `<span${num === line ? ' style="color:var(--hl-error);font-weight:700"' : ''}>${num}</span>`;
         }).join('<br>');
 
-        // Show in preview with error line highlighted
         let highlighted = '';
-        const errorLineIdx = line - 1;
         lines.forEach((l, i) => {
             const escaped = escapeHtml(l);
-            if (i === errorLineIdx) {
+            if (i === line - 1) {
                 highlighted += '<span class="error-line-highlight">' + escaped + '</span>';
             } else {
                 highlighted += escaped;
@@ -699,10 +619,6 @@
         });
 
         codeContent.innerHTML = highlighted;
-        renderCodeGutter(lines.length);
-
-        // Color error line in code gutter
-        const gutterSpans = codeGutter.querySelectorAll ? null : null;
         codeGutter.innerHTML = lines.map((_, i) => {
             const num = i + 1;
             return `<span${num === line ? ' style="color:var(--hl-error);font-weight:700"' : ''}>${num}</span>`;
@@ -711,7 +627,6 @@
         errMsg.textContent = msg;
         errPos.textContent = '第 ' + line + ' 行，第 ' + col + ' 列';
         errorBox.classList.add('show');
-
         setStatus(false, '格式错误 · 行 ' + line + ' 列 ' + col);
     }
 
@@ -719,154 +634,104 @@
         errorBox.classList.remove('show');
     }
 
-    /* ========== Format ========== */
-    function doFormat() {
-        const raw = rawJson.value.trim();
-        if (!raw) { toast('请先输入 JSON'); return; }
-
-        clearError();
-        const result = parseJsonWithLocation(raw);
-
-        if (!result.ok) {
-            showError(result.message, result.line, result.col);
-            return;
-        }
-
-        // Re-parse stringified strings
-        let obj = result.value;
+    function unwrapJson(obj) {
         while (typeof obj === 'string') {
             try { obj = JSON.parse(obj); } catch(e) { break; }
         }
+        return obj;
+    }
 
+    function doFormat() {
+        const raw = rawJson.value.trim();
+        if (!raw) { toast('请先输入 JSON'); return; }
+        clearError();
+        const result = parseJsonWithLocation(raw);
+        if (!result.ok) { showError(result.message, result.line, result.col); return; }
+
+        const obj = unwrapJson(result.value);
         const formatted = JSON.stringify(obj, null, 4);
-        const highlighted = highlightRaw(formatted);
-        const lineCount = formatted.split('\n').length;
-
-        codeContent.innerHTML = highlighted;
-        renderCodeGutter(lineCount);
-        lastMode = 'format';
+        codeContent.innerHTML = highlightRaw(formatted);
+        renderCodeGutter(formatted.split('\n').length);
         lastResult = formatted;
-
         setStatus(true, '格式化完成');
         outputMeta.textContent = formatted.split('\n').length + ' 行 · ' + formatted.length + ' 字符';
         toast('格式化成功');
     }
 
-    /* ========== Compress ========== */
     function doCompress() {
         const raw = rawJson.value.trim();
         if (!raw) { toast('请先输入 JSON'); return; }
-
         clearError();
         const result = parseJsonWithLocation(raw);
+        if (!result.ok) { showError(result.message, result.line, result.col); return; }
 
-        if (!result.ok) {
-            showError(result.message, result.line, result.col);
-            return;
-        }
-
-        let obj = result.value;
-        while (typeof obj === 'string') {
-            try { obj = JSON.parse(obj); } catch(e) { break; }
-        }
-
+        const obj = unwrapJson(result.value);
         const compressed = JSON.stringify(obj);
-        const highlighted = highlightRaw(compressed);
-
-        codeContent.innerHTML = highlighted;
+        codeContent.innerHTML = highlightRaw(compressed);
         renderCodeGutter(1);
-        lastMode = 'compress';
         lastResult = compressed;
-
         setStatus(true, '压缩完成');
         outputMeta.textContent = '1 行 · ' + compressed.length + ' 字符';
         toast('压缩成功');
     }
 
-    /* ========== Validate ========== */
     function doValidate() {
         const raw = rawJson.value.trim();
         if (!raw) { toast('请先输入 JSON'); return; }
-
         const result = parseJsonWithLocation(raw);
-
-        if (!result.ok) {
-            showError(result.message, result.line, result.col);
-            toast('JSON 格式错误');
-            return;
-        }
-
+        if (!result.ok) { showError(result.message, result.line, result.col); toast('JSON 格式错误'); return; }
         clearError();
 
-        let obj = result.value;
-        while (typeof obj === 'string') {
-            try { obj = JSON.parse(obj); } catch(e) { break; }
-        }
-
-        // Show summary
+        const obj = unwrapJson(result.value);
         const type = Array.isArray(obj) ? '数组' : typeof obj === 'object' ? '对象' : typeof obj;
         let count = '';
-        if (Array.isArray(obj)) {
-            count = obj.length + ' 个元素';
-        } else if (typeof obj === 'object' && obj !== null) {
-            count = Object.keys(obj).length + ' 个键';
-        }
+        if (Array.isArray(obj)) count = obj.length + ' 个元素';
+        else if (typeof obj === 'object' && obj !== null) count = Object.keys(obj).length + ' 个键';
 
-        const summary = `<span class="tk-bool">✓ JSON 格式正确</span>\n\n<span class="tk-colon">类型：</span><span class="tk-str">${type}</span>\n<span class="tk-colon">内容：</span><span class="tk-num">${count}</span>\n<span class="tk-colon">大小：</span><span class="tk-num">${raw.length} 字符</span>`;
-
-        codeContent.innerHTML = summary;
+        codeContent.innerHTML =
+            '<span class="tk-bool">✓ JSON 格式正确</span>\n\n' +
+            '<span class="tk-colon">类型：</span><span class="tk-str">' + type + '</span>\n' +
+            '<span class="tk-colon">内容：</span><span class="tk-num">' + count + '</span>\n' +
+            '<span class="tk-colon">大小：</span><span class="tk-num">' + raw.length + ' 字符</span>';
         codeGutter.innerHTML = '1<br>2<br>3<br>4<br>5';
-        lastMode = 'validate';
-
         setStatus(true, '校验通过');
         outputMeta.textContent = type + ' · ' + count;
         toast('JSON 格式正确');
     }
 
-    /* ========== Copy ========== */
     function doCopy() {
         if (!lastResult) { toast('暂无可复制的内容'); return; }
-        navigator.clipboard.writeText(lastResult).then(() => {
-            toast('已复制到剪贴板');
-        });
+        navigator.clipboard.writeText(lastResult).then(() => toast('已复制到剪贴板'));
     }
 
-    /* ========== Clear ========== */
     function doClear() {
         rawJson.value = '';
         codeContent.innerHTML = '<span style="color:var(--text-dim)">等待格式化...</span>';
         codeGutter.innerHTML = '';
         lineGutter.innerHTML = '';
         clearError();
-        setStatus('', '就绪');
         statusDot.className = 'status-dot';
+        statusText.textContent = '就绪';
         inputMeta.textContent = '0 字符';
         outputMeta.textContent = '';
-        lastMode = '';
         lastResult = '';
         toast('已清空');
     }
 
-    /* ========== Shortcuts ========== */
     document.addEventListener('keydown', e => {
-        if (e.ctrlKey && e.key === 'Enter') {
-            e.preventDefault();
-            doFormat();
-        }
+        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); doFormat(); }
     });
 
-    // Tab key support in textarea
     rawJson.addEventListener('keydown', e => {
         if (e.key === 'Tab') {
             e.preventDefault();
-            const start = rawJson.selectionStart;
+            const s = rawJson.selectionStart;
             const end = rawJson.selectionEnd;
-            rawJson.value = rawJson.value.substring(0, start) + '  ' + rawJson.value.substring(end);
-            rawJson.selectionStart = rawJson.selectionEnd = start + 2;
+            rawJson.value = rawJson.value.substring(0, s) + '  ' + rawJson.value.substring(end);
+            rawJson.selectionStart = rawJson.selectionEnd = s + 2;
             updateLineGutter();
         }
     });
     </script>
-
 </body>
 </html>
