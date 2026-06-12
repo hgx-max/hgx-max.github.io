@@ -28,8 +28,8 @@
     font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
     background: var(--bg);
     color: var(--text-primary);
-    min-height: 100vh;
-    padding: 32px 16px 60px;
+    height: 100vh;
+    overflow: hidden;
     position: relative;
   }
 
@@ -52,30 +52,30 @@
     pointer-events: none;
   }
 
-  .container {
+  /* ===== 主布局 ===== */
+  .app {
     position: relative;
     z-index: 1;
-    max-width: 580px;
-    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   /* Header */
   .header {
-    margin-bottom: 28px;
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-  }
-
-  .header-row {
+    padding: 20px 28px 16px;
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 8px;
+    flex-shrink: 0;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
   }
 
   .header-icon {
-    width: 42px; height: 42px;
-    border-radius: 11px;
+    width: 38px; height: 38px;
+    border-radius: 10px;
     background: var(--accent-dim);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -86,21 +86,21 @@
     content: '';
     position: absolute;
     inset: -1.5px;
-    border-radius: 12.5px;
+    border-radius: 11.5px;
     border: 1px solid var(--accent);
     opacity: 0.12;
   }
 
   .header-icon svg {
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     stroke: var(--accent); fill: none;
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
-  .header h1 {
+  .header-text h1 {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-weight: 800;
-    font-size: 26px;
+    font-size: 22px;
     letter-spacing: -0.5px;
     background: linear-gradient(135deg, var(--text-primary) 40%, var(--accent) 100%);
     -webkit-background-clip: text;
@@ -108,56 +108,71 @@
     background-clip: text;
   }
 
-  .header p {
-    font-size: 13px;
+  .header-text p {
+    font-size: 12px;
     color: var(--text-muted);
     font-family: 'Courier New', Consolas, monospace;
     letter-spacing: 0.3px;
-    padding-left: 56px;
   }
 
-  /* Settings */
-  .settings {
+  /* 两栏主体 */
+  .main {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    padding: 0 20px 20px;
+    min-height: 0;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+    animation-delay: 0.06s;
+  }
+
+  /* ===== 左侧面板 ===== */
+  .panel-left {
+    width: 380px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 22px 22px 20px;
-    margin-bottom: 16px;
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-    animation-delay: 0.08s;
+    padding: 16px 18px;
   }
 
-  .section-label {
+  .card-title {
     font-size: 11px; font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     font-family: 'Courier New', Consolas, monospace;
   }
 
-  .top-config {
+  /* 长度 + 数量 */
+  .row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 22px;
+    gap: 14px;
   }
 
-  .config-block label {
-    display: block;
-    font-size: 13px;
+  .field-label {
+    font-size: 12px;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .length-val {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
     color: var(--accent);
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   input[type="range"] {
@@ -172,51 +187,43 @@
 
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
-    box-shadow: 0 0 12px var(--accent-dim);
-    transition: box-shadow 0.2s;
-  }
-
-  input[type="range"]::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 20px var(--accent-dim), 0 0 40px var(--accent-glow);
+    box-shadow: 0 0 10px var(--accent-dim);
   }
 
   input[type="range"]::-moz-range-thumb {
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
     border: none;
-    box-shadow: 0 0 12px var(--accent-dim);
   }
 
   .range-marks {
     display: flex;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 4px;
     padding: 0 2px;
   }
 
   .range-marks span {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-dim);
   }
 
-  .count-input-wrap { position: relative; }
-
   .count-input {
     width: 100%;
-    padding: 8px 12px;
+    padding: 7px 10px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--accent);
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
     text-align: center;
     outline: none;
@@ -230,86 +237,185 @@
 
   .count-hint {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-dim);
     text-align: center;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
-  /* Checkboxes */
-  .check-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 12px;
+  /* 字符集列表 - 可滚动 */
+  .charset-scroll {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
   }
 
-  .chk {
-    display: flex; align-items: center;
-    gap: 10px;
-    padding: 11px 13px;
-    border-radius: 10px;
+  .charset-scroll::-webkit-scrollbar { width: 4px; }
+  .charset-scroll::-webkit-scrollbar-track { background: transparent; }
+  .charset-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .charset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .charset-item {
+    border-radius: 9px;
     background: var(--bg);
     border: 1px solid var(--border);
+    padding: 9px 12px;
     cursor: pointer;
     transition: all 0.2s;
     user-select: none;
   }
 
-  .chk:hover {
+  .charset-item:hover {
     border-color: var(--text-dim);
     background: var(--surface-hover);
   }
 
-  .chk.on {
+  .charset-item.on {
     border-color: var(--accent);
     background: var(--accent-glow);
   }
 
-  .chk input { display: none; }
+  .charset-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
 
   .chk-box {
-    width: 17px; height: 17px;
-    border-radius: 5px;
+    width: 16px; height: 16px;
+    border-radius: 4px;
     border: 2px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     transition: all 0.2s;
   }
 
-  .chk.on .chk-box {
+  .charset-item.on .chk-box,
+  .custom-section.on .chk-box {
     background: var(--accent);
     border-color: var(--accent);
   }
 
   .chk-box svg {
-    width: 10px; height: 10px;
+    width: 9px; height: 9px;
     stroke: var(--bg); fill: none;
     stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
     opacity: 0; transform: scale(0.4);
     transition: all 0.15s;
   }
 
-  .chk.on .chk-box svg { opacity: 1; transform: scale(1); }
+  .charset-item.on .chk-box svg,
+  .custom-section.on .chk-box svg {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-  .chk-info { display: flex; flex-direction: column; gap: 1px; }
+  .charset-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
 
-  .chk-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .charset-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
 
-  .chk-sample {
+  .charset-count {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-dim);
-    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.04);
+    padding: 1px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .charset-reset {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .charset-item.on .charset-reset {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .charset-reset:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+    background: var(--surface);
+  }
+
+  .charset-reset svg {
+    width: 11px; height: 11px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .charset-chars {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+    margin-top: 0;
+  }
+
+  .charset-item.on .charset-chars {
+    margin-top: 8px;
+    grid-template-rows: 1fr;
+  }
+
+  .charset-chars-inner { overflow: hidden; }
+
+  .charset-input {
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    outline: none;
+    transition: all 0.2s;
+    opacity: 0.35;
+  }
+
+  .charset-item.on .charset-input { opacity: 1; }
+
+  .charset-item.on .charset-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-dim);
   }
 
   /* Custom */
   .custom-section {
-    border-radius: 10px;
+    border-radius: 9px;
     background: var(--bg);
     border: 1px solid var(--border);
-    padding: 12px 13px;
+    padding: 9px 12px;
     transition: all 0.2s;
+    margin-top: 2px;
   }
 
   .custom-section.on {
@@ -319,14 +425,14 @@
 
   .custom-toggle {
     display: flex; align-items: center;
-    gap: 10px;
+    gap: 9px;
     cursor: pointer;
     user-select: none;
     margin-bottom: 0;
     transition: margin-bottom 0.25s;
   }
 
-  .custom-section.on .custom-toggle { margin-bottom: 10px; }
+  .custom-section.on .custom-toggle { margin-bottom: 8px; }
 
   .custom-input-row {
     display: grid;
@@ -340,13 +446,13 @@
 
   .custom-input {
     width: 100%;
-    padding: 9px 12px;
+    padding: 7px 10px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--text-primary);
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 13px;
+    font-size: 12px;
     outline: none;
     transition: all 0.2s;
     opacity: 0.35;
@@ -356,38 +462,32 @@
 
   .custom-section.on .custom-input:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-dim);
+    box-shadow: 0 0 0 2px var(--accent-dim);
   }
 
   .custom-input::placeholder {
     color: var(--text-dim);
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
   }
 
-  /* Generate Button */
-  .gen-row {
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-    animation-delay: 0.16s;
-  }
-
+  /* 生成按钮 */
   .btn-gen {
     width: 100%;
-    padding: 15px;
+    padding: 13px;
     background: var(--accent);
     color: var(--bg);
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 14px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     letter-spacing: 0.5px;
     transition: all 0.25s;
     display: flex; align-items: center; justify-content: center;
-    gap: 8px;
+    gap: 7px;
+    flex-shrink: 0;
   }
 
   .btn-gen:hover {
@@ -399,38 +499,40 @@
   .btn-gen:active { transform: scale(0.985); }
 
   .btn-gen svg {
-    width: 18px; height: 18px;
+    width: 16px; height: 16px;
     stroke: currentColor; fill: none;
-    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
   }
 
-  /* Results */
-  .results {
+  /* ===== 右侧面板 ===== */
+  .panel-right {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-    animation-delay: 0.24s;
   }
 
   .results-head {
     display: flex; align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
     gap: 8px;
+    flex-shrink: 0;
   }
 
   .results-left {
     display: flex; align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .results-title {
-    font-size: 13px; font-weight: 600;
+    font-size: 12px; font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -439,19 +541,19 @@
 
   .count-badge {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 11px;
+    font-size: 10px;
     color: var(--accent);
     background: var(--accent-dim);
-    padding: 2px 8px;
-    border-radius: 6px;
+    padding: 2px 7px;
+    border-radius: 5px;
     font-weight: 500;
   }
 
   .strength-inline {
     display: flex; align-items: center;
-    gap: 8px;
+    gap: 6px;
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .strength-inline .s-label {
@@ -461,7 +563,7 @@
   }
 
   .strength-bar-mini {
-    width: 52px; height: 3px;
+    width: 48px; height: 3px;
     background: var(--border);
     border-radius: 2px;
     overflow: hidden;
@@ -481,12 +583,12 @@
 
   .btn-copy-all {
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 12px; font-weight: 500;
+    font-size: 11px; font-weight: 500;
     color: var(--text-muted);
     background: none;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 5px 12px;
+    border-radius: 7px;
+    padding: 5px 11px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex; align-items: center;
@@ -504,30 +606,39 @@
   }
 
   .btn-copy-all svg {
-    width: 13px; height: 13px;
+    width: 12px; height: 12px;
     stroke: currentColor; fill: none;
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
-  .result-list { padding: 4px 0; }
+  /* 结果列表 - 自动填满 */
+  .result-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2px 0;
+    min-height: 0;
+  }
+
+  .result-list::-webkit-scrollbar { width: 4px; }
+  .result-list::-webkit-scrollbar-track { background: transparent; }
+  .result-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   .result-item {
     display: flex;
     align-items: center;
-    padding: 11px 20px;
-    gap: 14px;
+    padding: 9px 18px;
+    gap: 12px;
     transition: background 0.15s;
     opacity: 0;
-    animation: slideIn 0.35s ease forwards;
+    animation: slideIn 0.3s ease forwards;
     position: relative;
-    overflow: hidden;
   }
 
   .result-item::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 20px; right: 20px;
+    left: 18px; right: 18px;
     height: 1px;
     background: var(--border);
   }
@@ -538,9 +649,9 @@
 
   .result-num {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-dim);
-    width: 24px;
+    width: 22px;
     flex-shrink: 0;
     text-align: right;
   }
@@ -549,18 +660,21 @@
     flex: 1;
     min-width: 0;
     overflow: hidden;
+    display: flex;
+    align-items: center;
   }
 
   .result-pwd {
     font-family: 'Courier New', Consolas, monospace;
-    font-size: 14px;
-    letter-spacing: 0.6px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
     line-height: 1.5;
     cursor: text;
     user-select: all;
     white-space: nowrap;
     transform-origin: left center;
-    transition: font-size 0.15s ease;
+    display: inline-block;
+    will-change: transform, font-size;
   }
 
   .result-pwd .c-num { color: var(--blue); }
@@ -570,9 +684,9 @@
   .result-pwd .c-cus { color: var(--pink); }
 
   .btn-copy-one {
-    width: 32px; height: 32px;
+    width: 28px; height: 28px;
     flex-shrink: 0;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: none;
     cursor: pointer;
@@ -593,36 +707,42 @@
   }
 
   .btn-copy-one svg {
-    width: 14px; height: 14px;
+    width: 13px; height: 13px;
     stroke: currentColor; fill: none;
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
   .empty-hint {
     text-align: center;
-    padding: 48px 20px;
+    padding: 60px 20px;
     color: var(--text-dim);
     font-size: 13px;
   }
 
-  /* Toast */
+  /* ===== Toast - 更大更醒目 ===== */
   .toast {
     position: fixed;
-    bottom: 28px;
+    top: 24px;
     left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface);
-    border: 1px solid var(--accent);
+    transform: translateX(-50%) translateY(-24px);
+    background: linear-gradient(135deg, #111318 0%, #161922 100%);
+    border: 1.5px solid var(--accent);
     color: var(--accent);
-    font-family: 'Courier New', Consolas, monospace;
-    font-size: 13px;
-    padding: 10px 20px;
-    border-radius: 10px;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 12px;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: none;
     z-index: 100;
     white-space: nowrap;
+    box-shadow:
+      0 8px 32px rgba(0, 229, 160, 0.2),
+      0 2px 8px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    letter-spacing: 0.5px;
   }
 
   .toast.show {
@@ -631,161 +751,226 @@
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-6px); }
+    from { opacity: 0; transform: translateX(-4px); }
     to   { opacity: 1; transform: translateX(0); }
   }
 
-  @media (max-width: 540px) {
-    .check-grid { grid-template-columns: 1fr; }
-    .header p { padding-left: 0; margin-top: 4px; }
-    .header h1 { font-size: 22px; }
-    .results-head { padding: 12px 14px; }
-    .result-item { padding: 10px 14px; gap: 10px; }
-    .result-item::after { left: 14px; right: 14px; }
-    .top-config { grid-template-columns: 1fr; gap: 14px; }
+  /* ===== 响应式 ===== */
+  @media (max-width: 860px) {
+    body { overflow: auto; }
+    .app { height: auto; min-height: 100vh; }
+    .main {
+      flex-direction: column;
+      overflow: visible;
+    }
+    .panel-left { width: 100%; }
+    .panel-right { min-height: 400px; }
+    .charset-scroll { max-height: none; overflow: visible; }
   }
 </style>
 </head>
 <body>
 
-<div class="container">
-
+<div class="app">
   <!-- Header -->
   <div class="header">
-    <div class="header-row">
-      <div class="header-icon">
-        <!-- 锁图标 - 原创绘制 -->
-        <svg viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 0 1 12 0v3"/><rect x="4" y="10" width="16" height="12" rx="2"/><circle cx="12" cy="16" r="2"/></svg>
-      </div>
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 0 1 12 0v3"/><rect x="4" y="10" width="16" height="12" rx="2"/><circle cx="12" cy="16" r="2"/></svg>
+    </div>
+    <div class="header-text">
       <h1>密码生成器</h1>
-    </div>
-    <p>// 安全随机，批量生成</p>
-  </div>
-
-  <!-- Settings -->
-  <div class="settings">
-    <div class="section-label">配置</div>
-
-    <!-- Length + Count -->
-    <div class="top-config">
-      <div class="config-block">
-        <label>密码长度</label>
-        <div class="length-val" id="lengthVal">12</div>
-        <input type="range" id="lengthSlider" min="4" max="64" value="12" oninput="onLengthChange(this.value)">
-        <div class="range-marks">
-          <span>4</span><span>16</span><span>32</span><span>48</span><span>64</span>
-        </div>
-      </div>
-      <div class="config-block">
-        <label>生成数量</label>
-        <div class="count-input-wrap">
-          <input type="number" class="count-input" id="countInput" value="10" min="1" max="200" oninput="onCountInput()">
-        </div>
-        <div class="count-hint">范围 1 ~ 200</div>
-      </div>
-    </div>
-
-    <!-- Standard charsets -->
-    <div class="check-grid">
-      <label class="chk on" onclick="toggleStd(this, event)">
-        <input type="checkbox" checked data-charset="upper">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="chk-info">
-          <span class="chk-label">大写字母</span>
-          <span class="chk-sample">A B C D E F</span>
-        </div>
-      </label>
-      <label class="chk on" onclick="toggleStd(this, event)">
-        <input type="checkbox" checked data-charset="lower">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="chk-info">
-          <span class="chk-label">小写字母</span>
-          <span class="chk-sample">a b c d e f</span>
-        </div>
-      </label>
-      <label class="chk on" onclick="toggleStd(this, event)">
-        <input type="checkbox" checked data-charset="number">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="chk-info">
-          <span class="chk-label">数字</span>
-          <span class="chk-sample">0 1 2 3 4 5</span>
-        </div>
-      </label>
-      <label class="chk on" onclick="toggleStd(this, event)">
-        <input type="checkbox" checked data-charset="special">
-        <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="chk-info">
-          <span class="chk-label">特殊字符</span>
-          <span class="chk-sample">! @ # $ % ^</span>
-        </div>
-      </label>
-    </div>
-
-    <!-- Custom -->
-    <div class="custom-section" id="customSection">
-      <div class="custom-toggle" onclick="toggleCustom()">
-        <div class="chk-box" id="customBox"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="chk-info">
-          <span class="chk-label">自定义字符</span>
-          <span class="chk-sample">自行输入任意字符</span>
-        </div>
-      </div>
-      <div class="custom-input-row">
-        <div class="custom-input-inner">
-          <input type="text" class="custom-input" id="customInput" placeholder="输入自定义字符，如 ~`|&quot;'" disabled>
-        </div>
-      </div>
+      <p>// 安全随机 批量生成</p>
     </div>
   </div>
 
-  <!-- Generate -->
-  <div class="gen-row">
-    <button class="btn-gen" onclick="generate()">
-      <!-- 刷新/循环箭头图标 - 原创绘制 -->
-      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/><path d="M12 21a9 9 0 0 1-7.2-3.6"/><path d="M3 21v-5h5"/><circle cx="12" cy="12" r="1.5"/></svg>
-      <span id="genBtnText">生成 10 个密码</span>
-    </button>
-  </div>
+  <!-- 两栏主体 -->
+  <div class="main">
 
-  <!-- Results -->
-  <div class="results" id="resultsPanel">
-    <div class="results-head">
-      <div class="results-left">
-        <span class="results-title">生成结果</span>
-        <span class="count-badge" id="countBadge">×10</span>
-        <div class="strength-inline">
-          <span class="s-label">强度</span>
-          <div class="strength-bar-mini"><div class="strength-bar-mini-fill" id="sFill"></div></div>
-          <span class="s-text" id="sText">—</span>
+    <!-- ===== 左侧：设置 ===== -->
+    <div class="panel-left">
+
+      <!-- 长度 + 数量 -->
+      <div class="card">
+        <div class="row-2">
+          <div>
+            <div class="field-label">密码长度</div>
+            <div class="length-val" id="lengthVal">12</div>
+            <input type="range" id="lengthSlider" min="4" max="64" value="12" oninput="onLengthChange(this.value)">
+            <div class="range-marks">
+              <span>4</span><span>16</span><span>32</span><span>64</span>
+            </div>
+          </div>
+          <div>
+            <div class="field-label">生成数量</div>
+            <div style="margin-top:8px">
+              <input type="number" class="count-input" id="countInput" value="10" min="1" max="200" oninput="onCountInput()">
+            </div>
+            <div class="count-hint">范围 1 ~ 200</div>
+          </div>
         </div>
       </div>
-      <button class="btn-copy-all" id="btnCopyAll" onclick="copyAll()">
-        <!-- 剪贴板图标 - 原创绘制 -->
-        <svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M5 6h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
-        复制全部
+
+      <!-- 字符集 -->
+      <div class="card" style="flex:1; display:flex; flex-direction:column; min-height:0; overflow:hidden">
+        <div class="card-title">字符集</div>
+        <div class="charset-scroll">
+          <div class="charset-list">
+
+            <div class="charset-item on" data-key="upper">
+              <div class="charset-head" onclick="toggleCharset(this.parentElement, event)">
+                <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+                <div class="charset-meta">
+                  <span class="charset-label">大写字母</span>
+                  <span class="charset-count" data-count="26">26</span>
+                </div>
+                <button class="charset-reset" title="恢复默认" onclick="resetCharset(this.closest('.charset-item'), event)">
+                  <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/></svg>
+                </button>
+              </div>
+              <div class="charset-chars" onclick="event.stopPropagation()">
+                <div class="charset-chars-inner">
+                  <input type="text" class="charset-input" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ" oninput="onCharsetInput(this)">
+                </div>
+              </div>
+            </div>
+
+            <div class="charset-item on" data-key="lower">
+              <div class="charset-head" onclick="toggleCharset(this.parentElement, event)">
+                <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+                <div class="charset-meta">
+                  <span class="charset-label">小写字母</span>
+                  <span class="charset-count" data-count="26">26</span>
+                </div>
+                <button class="charset-reset" title="恢复默认" onclick="resetCharset(this.closest('.charset-item'), event)">
+                  <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/></svg>
+                </button>
+              </div>
+              <div class="charset-chars" onclick="event.stopPropagation()">
+                <div class="charset-chars-inner">
+                  <input type="text" class="charset-input" value="abcdefghijklmnopqrstuvwxyz" oninput="onCharsetInput(this)">
+                </div>
+              </div>
+            </div>
+
+            <div class="charset-item on" data-key="number">
+              <div class="charset-head" onclick="toggleCharset(this.parentElement, event)">
+                <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+                <div class="charset-meta">
+                  <span class="charset-label">数字</span>
+                  <span class="charset-count" data-count="10">10</span>
+                </div>
+                <button class="charset-reset" title="恢复默认" onclick="resetCharset(this.closest('.charset-item'), event)">
+                  <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/></svg>
+                </button>
+              </div>
+              <div class="charset-chars" onclick="event.stopPropagation()">
+                <div class="charset-chars-inner">
+                  <input type="text" class="charset-input" value="0123456789" oninput="onCharsetInput(this)">
+                </div>
+              </div>
+            </div>
+
+            <div class="charset-item on" data-key="special">
+              <div class="charset-head" onclick="toggleCharset(this.parentElement, event)">
+                <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+                <div class="charset-meta">
+                  <span class="charset-label">特殊字符</span>
+                  <span class="charset-count" data-count="25">25</span>
+                </div>
+                <button class="charset-reset" title="恢复默认" onclick="resetCharset(this.closest('.charset-item'), event)">
+                  <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/></svg>
+                </button>
+              </div>
+              <div class="charset-chars" onclick="event.stopPropagation()">
+                <div class="charset-chars-inner">
+                  <input type="text" class="charset-input" value="!@#$%^&amp;*()_+-=[]{}|;:,.&lt;&gt;?" oninput="onCharsetInput(this)">
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom -->
+            <div class="custom-section" id="customSection">
+              <div class="custom-toggle" onclick="toggleCustom()">
+                <div class="chk-box"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+                <div class="charset-meta">
+                  <span class="charset-label">自定义字符</span>
+                  <span class="charset-count" style="color:var(--text-dim)">自选</span>
+                </div>
+              </div>
+              <div class="custom-input-row">
+                <div class="custom-input-inner">
+                  <input type="text" class="custom-input" id="customInput" placeholder="输入自定义字符" disabled>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 生成按钮 -->
+      <button class="btn-gen" onclick="generate()">
+        <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 1 7.2 3.6"/><path d="M21 3v5h-5"/><path d="M12 21a9 9 0 0 1-7.2-3.6"/><path d="M3 21v-5h5"/><circle cx="12" cy="12" r="1.5"/></svg>
+        <span id="genBtnText">生成 10 个密码</span>
       </button>
-    </div>
-    <div class="result-list" id="resultList">
-      <div class="empty-hint">点击上方按钮生成密码</div>
-    </div>
-  </div>
 
+    </div>
+
+    <!-- ===== 右侧：结果 ===== -->
+    <div class="panel-right">
+      <div class="results-head">
+        <div class="results-left">
+          <span class="results-title">生成结果</span>
+          <span class="count-badge" id="countBadge">×10</span>
+          <div class="strength-inline">
+            <span class="s-label">强度</span>
+            <div class="strength-bar-mini"><div class="strength-bar-mini-fill" id="sFill"></div></div>
+            <span class="s-text" id="sText">—</span>
+          </div>
+        </div>
+        <button class="btn-copy-all" id="btnCopyAll" onclick="copyAll()">
+          <svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="4" rx="1.5"/><path d="M5 6h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+          复制全部
+        </button>
+      </div>
+      <div class="result-list" id="resultList">
+        <div class="empty-hint">点击左侧按钮生成密码</div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const CHARSETS = {
+const DEFAULT_CHARS = {
   upper:   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   lower:   'abcdefghijklmnopqrstuvwxyz',
   number:  '0123456789',
   special: '!@#$%^&*()_+-=[]{}|;:,.<>?'
 };
+
+function decodeHtml(str) {
+  const el = document.createElement('textarea');
+  el.innerHTML = str;
+  return el.value;
+}
+
+function initCharsets() {
+  document.querySelectorAll('.charset-item').forEach(item => {
+    const input = item.querySelector('.charset-input');
+    if (input) {
+      input.value = decodeHtml(input.value);
+      updateCharsetCount(item);
+    }
+  });
+}
 
 const STRENGTH = [
   { min: 0,  text: '弱',   color: '#ff4d6a', w: '25%' },
@@ -797,10 +982,9 @@ const STRENGTH = [
 let passwords = [];
 let customOn = false;
 
-/* 原创 SVG 图标路径 - 用于动态创建的按钮 */
 const ICONS = {
-  copy:     '<rect x="8" y="5" width="12" height="14" rx="1.5"/><path d="M5 8h1.5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>',
-  copied:   '<path d="M5 12l5 5L20 7"/>'
+  copy:   '<rect x="8" y="5" width="12" height="14" rx="1.5"/><path d="M5 8h1.5a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>',
+  copied: '<path d="M5 12l5 5L20 7"/>'
 };
 
 function secRand(n) {
@@ -814,7 +998,7 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(t._tid);
-  t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 function getCount() {
@@ -830,23 +1014,43 @@ function onCountInput() {
   document.getElementById('countBadge').textContent = '×' + v;
 }
 
-function toggleStd(label, ev) {
-  ev.preventDefault();
-  const cb = label.querySelector('input[type="checkbox"]');
-  const total = document.querySelectorAll('.check-grid .chk.on').length + (customOn ? 1 : 0);
-  if (label.classList.contains('on') && total <= 1) {
+function toggleCharset(item, ev) {
+  if (ev.target.closest('.charset-reset') || ev.target.closest('.charset-chars')) return;
+  const total = document.querySelectorAll('.charset-item.on').length + (customOn ? 1 : 0);
+  if (item.classList.contains('on') && total <= 1) {
     toast('至少需要选择一种字符类型');
     return;
   }
-  cb.checked = !cb.checked;
-  label.classList.toggle('on', cb.checked);
+  item.classList.toggle('on');
+}
+
+function onCharsetInput(input) {
+  updateCharsetCount(input.closest('.charset-item'));
+}
+
+function updateCharsetCount(item) {
+  const input = item.querySelector('.charset-input');
+  const countEl = item.querySelector('.charset-count');
+  if (!input || !countEl) return;
+  const unique = [...new Set(input.value)].join('');
+  countEl.textContent = unique.length;
+}
+
+function resetCharset(item, ev) {
+  ev.stopPropagation();
+  const key = item.dataset.key;
+  if (!key || !DEFAULT_CHARS[key]) return;
+  const input = item.querySelector('.charset-input');
+  input.value = DEFAULT_CHARS[key];
+  updateCharsetCount(item);
+  toast('已恢复默认');
 }
 
 function toggleCustom() {
   const section = document.getElementById('customSection');
   const input = document.getElementById('customInput');
   if (customOn) {
-    const total = document.querySelectorAll('.check-grid .chk.on').length;
+    const total = document.querySelectorAll('.charset-item.on').length;
     if (total <= 0) { toast('至少需要选择一种字符类型'); return; }
   }
   customOn = !customOn;
@@ -861,9 +1065,12 @@ function onLengthChange(v) {
 
 function getCharsets() {
   const list = [];
-  document.querySelectorAll('.check-grid .chk.on').forEach(el => {
-    const cb = el.querySelector('input[data-charset]');
-    if (cb && cb.checked) list.push({ key: cb.dataset.charset, pool: CHARSETS[cb.dataset.charset] });
+  document.querySelectorAll('.charset-item.on').forEach(item => {
+    const input = item.querySelector('.charset-input');
+    if (input) {
+      const unique = [...new Set(input.value)].join('');
+      if (unique.length > 0) list.push({ key: item.dataset.key, pool: unique });
+    }
   });
   if (customOn) {
     const raw = document.getElementById('customInput').value.trim();
@@ -917,33 +1124,53 @@ function generate() {
 
   renderResults();
   refreshStrength();
+  toast('已生成 ' + count + ' 个密码');
+}
+
+function getCharsetPool(key) {
+  const item = document.querySelector('.charset-item[data-key="' + key + '"]');
+  if (!item) return '';
+  const input = item.querySelector('.charset-input');
+  return input ? input.value : '';
 }
 
 function charClass(ch) {
-  if (/[A-Z]/.test(ch)) return 'c-up';
-  if (/[a-z]/.test(ch)) return 'c-low';
-  if (/[0-9]/.test(ch)) return 'c-num';
+  if (getCharsetPool('upper').includes(ch)) return 'c-up';
+  if (getCharsetPool('lower').includes(ch)) return 'c-low';
+  if (getCharsetPool('number').includes(ch)) return 'c-num';
   if (customOn) {
     const raw = document.getElementById('customInput').value.trim();
     if ([...new Set(raw)].includes(ch)) return 'c-cus';
   }
+  if (getCharsetPool('special').includes(ch)) return 'c-sym';
   return 'c-sym';
 }
 
 function fitPasswordText(pwdEl) {
+  const wrap = pwdEl.parentElement;
+  const baseSize = 13;
+  const minSize = 4;
+
+  pwdEl.style.fontSize = baseSize + 'px';
+  pwdEl.style.letterSpacing = '0.5px';
+  pwdEl.style.transform = '';
+
   requestAnimationFrame(() => {
-    const wrap = pwdEl.parentElement;
     const wrapW = wrap.clientWidth;
     const textW = pwdEl.scrollWidth;
-    if (textW > wrapW) {
+
+    if (textW > wrapW && wrapW > 0) {
       const ratio = wrapW / textW;
-      const baseSize = 14;
-      const newSize = Math.max(baseSize * ratio, 7);
+      const newSize = Math.max(baseSize * ratio, minSize);
       pwdEl.style.fontSize = newSize + 'px';
-      pwdEl.style.letterSpacing = (0.6 * ratio) + 'px';
-    } else {
-      pwdEl.style.fontSize = '';
-      pwdEl.style.letterSpacing = '';
+      pwdEl.style.letterSpacing = (0.5 * ratio) + 'px';
+
+      requestAnimationFrame(() => {
+        const overflow = pwdEl.scrollWidth - wrapW;
+        if (overflow > 0) {
+          pwdEl.style.transform = 'scaleX(' + (wrapW / pwdEl.scrollWidth) + ')';
+        }
+      });
     }
   });
 }
@@ -955,7 +1182,7 @@ function renderResults() {
   passwords.forEach((pwd, i) => {
     const row = document.createElement('div');
     row.className = 'result-item';
-    row.style.animationDelay = `${Math.min(i, 30) * 0.03}s`;
+    row.style.animationDelay = `${Math.min(i, 50) * 0.02}s`;
 
     const num = document.createElement('span');
     num.className = 'result-num';
@@ -986,7 +1213,7 @@ function renderResults() {
     row.appendChild(btn);
     list.appendChild(row);
 
-    fitPasswordText(pwdEl);
+    setTimeout(() => fitPasswordText(pwdEl), 0);
   });
 }
 
@@ -1018,14 +1245,14 @@ function copyAll() {
 }
 
 window.addEventListener('resize', () => {
-  document.querySelectorAll('.result-pwd').forEach(fitPasswordText);
+  document.querySelectorAll('.result-pwd').forEach(el => fitPasswordText(el));
 });
 
 document.getElementById('customInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
-// ===== 初始化：仅同步按钮文案，不自动生成 =====
+initCharsets();
 onCountInput();
 </script>
 
