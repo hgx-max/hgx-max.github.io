@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>密码生成器</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #08090c;
@@ -27,7 +25,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Noto Sans SC', sans-serif;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
     background: var(--bg);
     color: var(--text-primary);
     min-height: 100vh;
@@ -100,7 +98,7 @@
   }
 
   .header h1 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
     font-weight: 800;
     font-size: 26px;
     letter-spacing: -0.5px;
@@ -113,7 +111,7 @@
   .header p {
     font-size: 13px;
     color: var(--text-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     letter-spacing: 0.3px;
     padding-left: 56px;
   }
@@ -136,10 +134,9 @@
     text-transform: uppercase;
     letter-spacing: 1.5px;
     margin-bottom: 18px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
   }
 
-  /* Two-column top row */
   .top-config {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -154,9 +151,8 @@
     margin-bottom: 8px;
   }
 
-  /* Length slider */
   .length-val {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 20px;
     font-weight: 500;
     color: var(--accent);
@@ -205,12 +201,11 @@
   }
 
   .range-marks span {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 10px;
     color: var(--text-dim);
   }
 
-  /* Count input */
   .count-input-wrap { position: relative; }
 
   .count-input {
@@ -220,7 +215,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--accent);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 20px;
     font-weight: 500;
     text-align: center;
@@ -234,7 +229,7 @@
   }
 
   .count-hint {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 10px;
     color: var(--text-dim);
     text-align: center;
@@ -302,7 +297,7 @@
   .chk-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
 
   .chk-sample {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 0.5px;
@@ -350,7 +345,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text-primary);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 13px;
     outline: none;
     transition: all 0.2s;
@@ -366,7 +361,7 @@
 
   .custom-input::placeholder {
     color: var(--text-dim);
-    font-family: 'Noto Sans SC', sans-serif;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 12px;
   }
 
@@ -383,7 +378,7 @@
     padding: 15px;
     background: var(--accent);
     color: var(--bg);
-    font-family: 'Noto Sans SC', sans-serif;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-weight: 700;
     font-size: 15px;
     border: none;
@@ -439,11 +434,11 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
   }
 
   .count-badge {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 11px;
     color: var(--accent);
     background: var(--accent-dim);
@@ -455,7 +450,7 @@
   .strength-inline {
     display: flex; align-items: center;
     gap: 8px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 11px;
   }
 
@@ -485,7 +480,7 @@
   }
 
   .btn-copy-all {
-    font-family: 'Noto Sans SC', sans-serif;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 12px; font-weight: 500;
     color: var(--text-muted);
     background: none;
@@ -542,7 +537,7 @@
   .result-item:hover { background: var(--surface-hover); }
 
   .result-num {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 11px;
     color: var(--text-dim);
     width: 24px;
@@ -557,7 +552,7 @@
   }
 
   .result-pwd {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 14px;
     letter-spacing: 0.6px;
     line-height: 1.5;
@@ -619,7 +614,7 @@
     background: var(--surface);
     border: 1px solid var(--accent);
     color: var(--accent);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Courier New', Consolas, monospace;
     font-size: 13px;
     padding: 10px 20px;
     border-radius: 10px;
