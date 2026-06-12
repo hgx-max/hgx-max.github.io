@@ -211,9 +211,7 @@
   }
 
   /* Count input */
-  .count-input-wrap {
-    position: relative;
-  }
+  .count-input-wrap { position: relative; }
 
   .count-input {
     width: 100%;
@@ -838,7 +836,6 @@ function toggleStd(label, ev) {
   }
   cb.checked = !cb.checked;
   label.classList.toggle('on', cb.checked);
-  refreshStrength();
 }
 
 function toggleCustom() {
@@ -852,12 +849,10 @@ function toggleCustom() {
   section.classList.toggle('on', customOn);
   input.disabled = !customOn;
   if (customOn) setTimeout(() => input.focus(), 200);
-  refreshStrength();
 }
 
 function onLengthChange(v) {
   document.getElementById('lengthVal').textContent = v;
-  refreshStrength();
 }
 
 function getCharsets() {
@@ -1018,7 +1013,6 @@ function copyAll() {
   });
 }
 
-// Resize listener to re-fit passwords
 window.addEventListener('resize', () => {
   document.querySelectorAll('.result-pwd').forEach(fitPasswordText);
 });
@@ -1027,8 +1021,8 @@ document.getElementById('customInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
+// ===== 初始化：仅同步按钮文案，不自动生成 =====
 onCountInput();
-generate();
 </script>
 
 </body>
